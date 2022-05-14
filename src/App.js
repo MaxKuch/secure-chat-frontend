@@ -1,25 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
+import React, {useEffect} from 'react'
+import { connect } from 'react-redux'
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
+import Auth from './pages/Auth'
+import Home from './pages/Home'
+import { userActions } from './redux/actions'
 
-function App() {
+function App({me, isAuth, token, fetchUserData}) {
+
+  useEffect(() => {
+    if(token && !me)
+      fetchUserData(token)
+  }, [me, token, fetchUserData])
+  
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="wrapper">
+      <Router>
+        <Routes>
+          <Route path='/'>
+            <Route index element={isAuth ?  <Navigate to="/im"/> : <Auth/>}/>
+            <Route index path='login' element={isAuth ?  <Navigate to="/im"/> : <Auth/>}/>
+            <Route path='register' element={isAuth ?  <Navigate to="/im"/> : <Auth/>}/>
+            <Route path='im' element={isAuth ? <Home/> : <Navigate to="/login"/>}/>
+          </Route> 
+        </Routes>
+      </Router>
     </div>
   );
 }
 
-export default App;
+export default connect(({ user: {isAuth, token, data} }) => ({isAuth, token, me: data}), userActions)(App);
