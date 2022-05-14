@@ -17,6 +17,7 @@ Secure Chat - [Demo](https://secure-chat0.herokuapp.com)
 
 **Stack:**
 
+* React
 * Redux
 * Antd
 * Formik
